@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect
 
 from config import Config
 from app.extensions import db
@@ -22,6 +22,6 @@ def create_app():
 
     @app.get("/")
     def home():
-        return {"message": "SAMS backend is running"}
+        return redirect("/auth/login")
 
     return app

@@ -1,0 +1,26 @@
+@media (max-width: 480px) {
+  .auth-app {
+    padding: 0;
+  }
+
+  .phone-shell {
+    width: 100%;
+    min-height: 100dvh;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .screen {
+    min-height: 100dvh;
+  }
+
+  h1 {
+    font-size: 42px;
+  }
+
+  .btn {
+    font-size: 30px;
+    height: 58px;
+  }
+}

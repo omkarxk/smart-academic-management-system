@@ -4,6 +4,8 @@
   };
 
   const screens = document.querySelectorAll(".screen");
+  let currentScreen = document.querySelector(".screen.active") || screens[0];
+  let isTransitioning = false;
   const navButtons = document.querySelectorAll("[data-next]");
   const roleTabs = document.querySelectorAll(".role-tab");
   const toggleButtons = document.querySelectorAll("[data-toggle]");
@@ -42,9 +44,20 @@
   };
 
   function showScreen(name) {
-    screens.forEach((screen) => {
-      screen.classList.toggle("active", screen.dataset.screen === name);
-    });
+    const nextScreen = [...screens].find((screen) => screen.dataset.screen === name);
+    if (!nextScreen || nextScreen === currentScreen || isTransitioning) return;
+
+    isTransitioning = true;
+    currentScreen.classList.add("is-leaving");
+    currentScreen.classList.remove("active");
+
+    nextScreen.classList.add("active");
+
+    window.setTimeout(() => {
+      currentScreen.classList.remove("is-leaving");
+      currentScreen = nextScreen;
+      isTransitioning = false;
+    }, 360);
   }
 
   function setRole(role) {

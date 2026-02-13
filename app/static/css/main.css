@@ -39,14 +39,80 @@ body {
   position: relative;
 }
 
+.phone-shell::before,
+.phone-shell::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.phone-shell::before {
+  width: 200px;
+  height: 200px;
+  top: -90px;
+  right: -90px;
+  background: radial-gradient(circle, rgba(76, 99, 237, 0.16) 0%, rgba(76, 99, 237, 0) 68%);
+  animation: floatBlobA 10s ease-in-out infinite;
+}
+
+.phone-shell::after {
+  width: 180px;
+  height: 180px;
+  left: -80px;
+  bottom: -80px;
+  background: radial-gradient(circle, rgba(85, 112, 245, 0.18) 0%, rgba(85, 112, 245, 0) 70%);
+  animation: floatBlobB 11s ease-in-out infinite;
+}
+
 .screen {
-  display: none;
+  position: absolute;
+  inset: 0;
   padding: 22px;
   min-height: 90dvh;
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateX(24px) scale(0.985);
+  pointer-events: none;
+  transition: opacity 320ms ease, transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 1;
 }
 
 .screen.active {
-  display: block;
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+  z-index: 3;
+}
+
+.screen.is-leaving {
+  opacity: 0;
+  transform: translateX(-18px) scale(0.985);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.screen.active > * {
+  position: relative;
+  z-index: 2;
+  animation: contentRise 420ms both;
+}
+
+.screen.active > *:nth-child(2) {
+  animation-delay: 50ms;
+}
+
+.screen.active > *:nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.screen.active > *:nth-child(4) {
+  animation-delay: 120ms;
+}
+
+.screen.active > *:nth-child(5) {
+  animation-delay: 160ms;
 }
 
 h1 {
@@ -97,6 +163,7 @@ h3 {
     radial-gradient(circle at 65% 62%, #5269ed 0 22px, transparent 24px),
     radial-gradient(circle at 85% 40%, #8ea0ff 0 10px, transparent 11px),
     linear-gradient(180deg, #f4f6ff 0%, #eef1ff 100%);
+  animation: drift 6s ease-in-out infinite;
 }
 
 .actions {
@@ -113,21 +180,29 @@ h3 {
   font-size: 24px;
   font-weight: 800;
   cursor: pointer;
+  transition: transform 140ms ease, box-shadow 220ms ease, filter 220ms ease;
 }
 
 .btn-primary {
   background: linear-gradient(180deg, #5570f5 0%, #4960e9 100%);
   color: #fff;
+  box-shadow: 0 8px 20px rgba(73, 96, 233, 0.28);
 }
 
 .btn-primary:hover {
   background: linear-gradient(180deg, #4c66ee 0%, #4058e2 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(73, 96, 233, 0.34);
 }
 
 .btn-outline {
   background: #fff;
   border: 2px solid var(--primary);
   color: var(--primary);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.99);
 }
 
 .link-btn,
@@ -152,6 +227,12 @@ h3 {
   cursor: pointer;
   color: #4253bc;
   padding: 0;
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+.back:hover {
+  transform: translateX(-2px);
+  color: #3142ad;
 }
 
 .role-switch {
@@ -173,12 +254,14 @@ h3 {
   color: #465299;
   background: transparent;
   cursor: pointer;
+  transition: transform 140ms ease, color 160ms ease, background-color 220ms ease;
 }
 
 .role-tab.active {
   background: #fff;
   color: var(--primary);
   box-shadow: 0 2px 8px rgba(35, 54, 136, 0.12);
+  transform: translateY(-1px);
 }
 
 .form-block {
@@ -200,11 +283,14 @@ input[type="password"] {
   padding: 0 14px;
   font-size: 17px;
   outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 120ms ease;
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus {
   border-color: #8ba0ff;
+  box-shadow: 0 0 0 4px rgba(76, 99, 237, 0.14);
+  transform: translateY(-1px);
 }
 
 .input-row {
@@ -223,6 +309,15 @@ input[type="password"]:focus {
   font-weight: 700;
   padding: 6px 10px;
   cursor: pointer;
+  transition: background-color 150ms ease, transform 120ms ease;
+}
+
+.eye:hover {
+  background: #dbe4ff;
+}
+
+.eye:active {
+  transform: translateY(-50%) scale(0.96);
 }
 
 .row-space {
@@ -247,6 +342,13 @@ input[type="password"]:focus {
   border: 1px solid #d7ddfb;
   border-radius: var(--radius);
   padding: 14px;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.detail-card:hover,
+.info-box:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(52, 74, 173, 0.08);
 }
 
 .detail-card p,
@@ -269,6 +371,11 @@ input[type="password"]:focus {
   font-weight: 800;
 }
 
+.otp:focus {
+  border-color: #7f95ff;
+  box-shadow: 0 0 0 4px rgba(76, 99, 237, 0.16);
+}
+
 .success-mark {
   width: 112px;
   height: 112px;
@@ -280,4 +387,66 @@ input[type="password"]:focus {
   font-size: 58px;
   font-weight: 800;
   margin: 36px auto;
+  animation: popIn 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes contentRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes floatBlobA {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-14px, 8px);
+  }
+}
+
+@keyframes floatBlobB {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(12px, -10px);
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

@@ -1,0 +1,9 @@
+{
+  "name": "SAMS",
+  "short_name": "SAMS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#1f2937",
+  "icons": []
+}

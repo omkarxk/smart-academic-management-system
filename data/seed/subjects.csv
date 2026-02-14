@@ -1,0 +1,16 @@
+subject_code,subject_short,subject_name,subject_type
+CS3201,OOSE,Object Oriented Software Engineering,THEORY
+CS3202,ML,Machine Learning,THEORY
+CS3203,CNS,Cryptography & Network Security,THEORY
+CS3204_CC,CC,Cloud Computing,PROFESSIONAL_ELECTIVE_II
+CS3204_DWDM,DWDM,Data Warehousing and Data Mining,PROFESSIONAL_ELECTIVE_II
+CS3204_SN,SN,Sensor Networks,PROFESSIONAL_ELECTIVE_II
+CS3205,ES,Embedded Systems,OPEN_ELECTIVE_II
+CS3206,OOSE LAB,Object Oriented Software Engineering Lab,LAB
+CS3207,ML LAB,Machine Learning Lab,LAB
+CS3208,CNS LAB,Cryptography & Network Security Lab,LAB
+CS3209,ES LAB,Embedded Systems Lab,LAB
+ACT_SELF_STUDY,SELF STUDY/LIBRARY,Self Study / Library,ACTIVITY
+ACT_REMEDIAL,REMEDIAL,Remedial Classes,ACTIVITY
+ACT_NCC_NSS,NCC/NSS,NCC / NSS,ACTIVITY
+ACT_SWATCH_BHARATH,SWATCH BHARATH,Swatch Bharath,ACTIVITY

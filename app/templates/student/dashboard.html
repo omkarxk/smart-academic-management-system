@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/edu_app.css') }}">
+</head>
+<body>
+  <main class="edu-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">{{ role }} Portal</p>
+        <h1>My Dashboard</h1>
+      </div>
+      <a class="chip-link" href="/auth/logout">Logout</a>
+    </header>
+
+    <section class="card">
+      <p class="meta"><strong>{{ user.name }}</strong> | Roll: {{ user.identifier }} | Section: {{ user.section_code }} | Sem: {{ user.semester }}</p>
+    </section>
+
+    <section class="card filters">
+      <label for="section-select">Section</label>
+      <select id="section-select" data-route="/student/dashboard">
+        {% for section in sections %}
+          <option value="{{ section.section_code }}" {% if section.section_code == selected_section %}selected{% endif %}>
+            {{ section.section_code }} (Room {{ section.room_no }})
+          </option>
+        {% endfor %}
+      </select>
+      <p class="meta">{{ summary.section.class_label }} | Effective from {{ summary.section.effective_from }}</p>
+    </section>
+
+    <section class="stats-grid">
+      <article class="card stat"><h2>{{ summary.subject_count }}</h2><p>Subjects</p></article>
+      <article class="card stat"><h2>{{ summary.faculty_count }}</h2><p>Faculty</p></article>
+      <article class="card stat"><h2>{{ summary.slot_count }}</h2><p>Weekly Slots</p></article>
+    </section>
+
+    <section class="card timetable-card">
+      <div class="section-head">
+        <h3>Section Timetable</h3>
+        <p>Morning + afternoon schedule</p>
+      </div>
+      <div class="day-tabs" id="day-tabs">
+        {% for day in day_order %}
+          <button class="day-tab {% if loop.first %}active{% endif %}" data-day="{{ day }}">{{ day }}</button>
+        {% endfor %}
+      </div>
+
+      {% for day in day_order %}
+      <div class="day-panel {% if loop.first %}active{% endif %}" data-panel="{{ day }}">
+        <ul class="slot-list">
+          {% for period_no, period_label in period_labels.items() %}
+            {% set row = week_matrix[day].get(period_no) %}
+            <li class="slot-item">
+              <div class="slot-time">P{{ period_no }}<span>{{ period_label }}</span></div>
+              <div class="slot-body">
+                <strong>{{ row.display_text if row else '-' }}</strong>
+                <small>{{ row.activity_type if row else 'FREE' }}</small>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </section>
+
+    <section class="card faculty-card">
+      <div class="section-head">
+        <h3>Faculty Details ({{ selected_section }})</h3>
+      </div>
+      <div class="faculty-list">
+        {% for row in faculty_rows %}
+          <article class="faculty-row">
+            <p>{{ row.subject_short }} - {{ row.subject_name }}</p>
+            <strong>{{ row.faculty_name }}</strong>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <nav class="bottom-nav">
+      <a class="active" href="#">Home</a>
+      <a href="#">Timetable</a>
+      <a href="#">Faculty</a>
+      <a href="#">Profile</a>
+    </nav>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/edu_dashboard.js') }}"></script>
+</body>
+</html>

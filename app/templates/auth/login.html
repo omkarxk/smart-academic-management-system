@@ -10,6 +10,16 @@
 <body>
   <div class="auth-app">
     <div class="phone-shell">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-wrap">
+            {% for category, message in messages %}
+              <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
       <section class="screen active" data-screen="welcome">
         <div class="hero-wrap">
           <h1>Welcome</h1>
@@ -35,13 +45,15 @@
           <button class="role-tab" type="button" data-role="faculty">Faculty</button>
         </div>
 
-        <div class="form-block">
+        <form class="form-block" method="post" action="{{ url_for('auth.signin') }}">
+          <input type="hidden" id="loginRole" name="role" value="student">
+
           <label id="loginIdLabel">Student Email / Roll Number</label>
-          <input id="loginId" type="text" placeholder="Enter student email or roll no">
+          <input id="loginId" name="identifier" type="text" placeholder="Enter student email or roll no" required>
 
           <label>Password</label>
           <div class="input-row">
-            <input id="loginPassword" type="password" placeholder="Enter password">
+            <input id="loginPassword" name="password" type="password" placeholder="Enter password" required>
             <button type="button" class="eye" data-toggle="loginPassword">Show</button>
           </div>
 
@@ -50,13 +62,13 @@
             <button class="text-link" data-next="forgot" type="button">Forgot Password?</button>
           </div>
 
-          <button class="btn btn-primary" id="loginAction" type="button">Login as Student</button>
+          <button class="btn btn-primary" id="loginAction" type="submit">Login as Student</button>
           <button class="text-link center" data-next="signup" type="button">Don't have an account? Sign Up</button>
-        </div>
+        </form>
 
         <div class="detail-card">
           <h3 id="detailTitle">Student quick details</h3>
-          <p id="detailBody">Use your college email and roll number format like <strong>24CSE103</strong>. You will see attendance, timetable, and notifications after login.</p>
+          <p id="detailBody">Use your roll number from approved section range and you will get your section timetable automatically.</p>
         </div>
       </section>
 
@@ -70,30 +82,32 @@
           <button class="role-tab" type="button" data-role="faculty">Faculty</button>
         </div>
 
-        <div class="form-block">
+        <form class="form-block" method="post" action="{{ url_for('auth.register') }}">
+          <input type="hidden" id="signupRole" name="role" value="student">
+
           <label id="signupNameLabel">Student Name</label>
-          <input id="signupName" type="text" placeholder="Enter full name">
+          <input id="signupName" name="name" type="text" placeholder="Enter full name" required>
 
           <label id="signupIdLabel">Student Email / Roll Number</label>
-          <input id="signupId" type="text" placeholder="Enter student email or roll no">
+          <input id="signupId" name="identifier" type="text" placeholder="Enter student email or roll no" required>
 
           <label>Password</label>
           <div class="input-row">
-            <input id="signupPassword" type="password" placeholder="Create password">
+            <input id="signupPassword" name="password" type="password" placeholder="Create password" required>
             <button type="button" class="eye" data-toggle="signupPassword">Show</button>
           </div>
 
           <label>Confirm Password</label>
           <div class="input-row">
-            <input id="confirmPassword" type="password" placeholder="Re-enter password">
+            <input id="confirmPassword" name="confirm_password" type="password" placeholder="Re-enter password" required>
             <button type="button" class="eye" data-toggle="confirmPassword">Show</button>
           </div>
 
-          <label class="checkbox"><input type="checkbox" checked> I agree with privacy policy</label>
+          <label class="checkbox"><input type="checkbox" checked required> I agree with privacy policy</label>
 
-          <button class="btn btn-primary" id="signupAction" type="button">Sign Up as Student</button>
+          <button class="btn btn-primary" id="signupAction" type="submit">Sign Up as Student</button>
           <button class="text-link center" data-next="login" type="button">Already have an account? Login</button>
-        </div>
+        </form>
       </section>
 
       <section class="screen" data-screen="forgot">
@@ -101,66 +115,13 @@
         <h1>Forgot Password?</h1>
         <p class="subtitle">No worries, we got you.</p>
 
-        <div class="info-box">We'll send a code to your registered contact.</div>
+        <div class="info-box">Password reset flow can be connected next with OTP/email.</div>
 
         <div class="form-block">
           <label id="forgotLabel">Student Email / Roll Number</label>
           <input id="forgotInput" type="text" placeholder="Enter student email or roll no">
-          <button class="btn btn-primary" data-next="verify" type="button">Send Code</button>
-          <button class="text-link center" data-next="login" type="button">Back to login</button>
+          <button class="btn btn-primary" data-next="login" type="button">Back to Login</button>
         </div>
-      </section>
-
-      <section class="screen" data-screen="verify">
-        <button class="back" data-next="forgot" type="button">&larr;</button>
-        <h1>Verification</h1>
-        <p class="subtitle">Enter the code to continue.</p>
-
-        <div class="otp-row">
-          <input maxlength="1" inputmode="numeric" class="otp" type="text">
-          <input maxlength="1" inputmode="numeric" class="otp" type="text">
-          <input maxlength="1" inputmode="numeric" class="otp" type="text">
-          <input maxlength="1" inputmode="numeric" class="otp" type="text">
-        </div>
-
-        <button class="btn btn-primary" data-next="reset" type="button">Continue</button>
-        <button class="text-link center" type="button">Didn't receive code? Send Again</button>
-      </section>
-
-      <section class="screen" data-screen="reset">
-        <button class="back" data-next="verify" type="button">&larr;</button>
-        <h1>Set New Password</h1>
-        <p class="subtitle">Create a unique password.</p>
-
-        <div class="form-block">
-          <label>New Password</label>
-          <div class="input-row">
-            <input id="newPassword" type="password" placeholder="Create new password">
-            <button type="button" class="eye" data-toggle="newPassword">Show</button>
-          </div>
-
-          <label>Confirm Password</label>
-          <div class="input-row">
-            <input id="newPasswordConfirm" type="password" placeholder="Re-enter password">
-            <button type="button" class="eye" data-toggle="newPasswordConfirm">Show</button>
-          </div>
-
-          <button class="btn btn-primary" data-next="changed" type="button">Reset Password</button>
-        </div>
-      </section>
-
-      <section class="screen" data-screen="changed">
-        <h1>Password Changed!</h1>
-        <p class="subtitle">Your password has been reset successfully.</p>
-        <div class="success-mark">&#10003;</div>
-        <button class="btn btn-primary" data-next="login" type="button">Continue</button>
-      </section>
-
-      <section class="screen" data-screen="created">
-        <h1>Account Created!</h1>
-        <p class="subtitle">Your account has been created successfully.</p>
-        <div class="success-mark">&#10003;</div>
-        <button class="btn btn-primary" data-next="login" type="button">Continue</button>
       </section>
     </div>
   </div>

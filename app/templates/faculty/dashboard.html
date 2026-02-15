@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/edu_app.css') }}">
+</head>
+<body>
+  <main class="edu-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">{{ role }} Portal</p>
+        <h1>Section Control</h1>
+      </div>
+      <a class="chip-link" href="/auth/logout">Logout</a>
+    </header>
+
+    <section class="card">
+      <p class="meta"><strong>{{ user.name }}</strong> | Faculty ID: {{ user.identifier }}</p>
+    </section>
+
+    <section class="card filters two-col">
+      <div>
+        <label for="section-select">Section</label>
+        <select id="section-select" data-route="/faculty/dashboard" data-faculty-select="faculty-select">
+          {% for section in sections %}
+            <option value="{{ section.section_code }}" {% if section.section_code == selected_section %}selected{% endif %}>
+              {{ section.section_code }} (Room {{ section.room_no }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="faculty-select">Faculty</label>
+        <select id="faculty-select" data-route="/faculty/dashboard" data-extra-param="faculty">
+          {% for name in faculty_view.faculty_names %}
+            <option value="{{ name }}" {% if name == faculty_view.selected_name %}selected{% endif %}>{{ name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <p class="meta">{{ summary.section.class_label }} | {{ summary.subject_count }} subjects</p>
+    </section>
+
+    <section class="stats-grid">
+      <article class="card stat"><h2>{{ summary.subject_count }}</h2><p>Section Subjects</p></article>
+      <article class="card stat"><h2>{{ faculty_view.assigned_subjects|length }}</h2><p>Assigned Subjects</p></article>
+      <article class="card stat"><h2>{{ faculty_view.teaching_slots|length }}</h2><p>Teaching Slots</p></article>
+    </section>
+
+    <section class="card faculty-card">
+      <div class="section-head">
+        <h3>Selected Faculty Details</h3>
+      </div>
+      {% if faculty_view.selected_name %}
+      <article class="faculty-highlight">
+        <h4>{{ faculty_view.selected_name }}</h4>
+        <ul>
+          {% for row in faculty_view.assigned_subjects %}
+            <li>{{ row.subject_short }} - {{ row.subject_name }}</li>
+          {% endfor %}
+        </ul>
+      </article>
+      {% else %}
+      <p class="empty">No faculty data available for this section.</p>
+      {% endif %}
+    </section>
+
+    <section class="card timetable-card">
+      <div class="section-head">
+        <h3>Section Timetable</h3>
+      </div>
+      <div class="day-tabs" id="day-tabs">
+        {% for day in day_order %}
+          <button class="day-tab {% if loop.first %}active{% endif %}" data-day="{{ day }}">{{ day }}</button>
+        {% endfor %}
+      </div>
+
+      {% for day in day_order %}
+      <div class="day-panel {% if loop.first %}active{% endif %}" data-panel="{{ day }}">
+        <ul class="slot-list">
+          {% for period_no, period_label in period_labels.items() %}
+            {% set row = week_matrix[day].get(period_no) %}
+            <li class="slot-item">
+              <div class="slot-time">P{{ period_no }}<span>{{ period_label }}</span></div>
+              <div class="slot-body">
+                <strong>{{ row.display_text if row else '-' }}</strong>
+                <small>{{ row.activity_type if row else 'FREE' }}</small>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </section>
+
+    <nav class="bottom-nav">
+      <a class="active" href="#">Overview</a>
+      <a href="#">Classes</a>
+      <a href="#">Timetable</a>
+      <a href="#">Profile</a>
+    </nav>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/edu_dashboard.js') }}"></script>
+</body>
+</html>
